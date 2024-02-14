@@ -1,0 +1,64 @@
+syntax = "proto3";
+package tinplate;
+option go_package = "github.com/abtinf/tinplate/proto";
+
+import "google/api/annotations.proto";
+import "google/api/httpbody.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+//well-known types
+import "google/protobuf/empty.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+    info: {
+        title: "tinplate";
+        version: "1";
+        license: {
+            name: "Copyright 2023 Abtin Forouzandeh Tabrizi. All Rights Reserved.";
+        }
+    }
+    base_path: "/api"
+};
+
+service API {
+    rpc StartupProbe (google.protobuf.Empty) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            get: "/probe/startup"
+        };
+    }
+    rpc LivenessProbe (google.protobuf.Empty) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            get: "/probe/live"
+        };
+    }
+    rpc ReadinessProbe (google.protobuf.Empty) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            get: "/probe/ready"
+        };
+    }
+
+    rpc ExampleGet (ExampleRequest) returns (ExampleReply) {
+        option (google.api.http) = {
+            get: "/ExampleGet"
+        };
+    }
+    rpc ExamplePost (ExampleRequest) returns (ExampleReply) {
+        option (google.api.http) = {
+            post: "/ExamplePost"
+            body: "*"
+        };
+    }
+    rpc Download (ExampleRequest) returns (stream google.api.HttpBody) {
+        option (google.api.http) = {
+            get: "/download"
+        };
+    }
+}
+
+message ExampleRequest {
+    string name = 1;
+}
+
+message ExampleReply {
+    string message = 1;
+}

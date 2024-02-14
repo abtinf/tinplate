@@ -1,0 +1,76 @@
+package server
+
+import (
+	"bytes"
+	"context"
+	"fmt"
+	"io"
+
+	pb "go-service-template/proto"
+
+	"google.golang.org/genproto/googleapis/api/httpbody"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
+)
+
+func (s *server) StartupProbe(ctx context.Context, r *emptypb.Empty) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
+}
+
+func (s *server) LivenessProbe(ctx context.Context, r *emptypb.Empty) (*emptypb.Empty, error) {
+	if !s.live.Load() {
+		return nil, status.Error(codes.Unavailable, codes.Unavailable.String())
+	}
+	return &emptypb.Empty{}, nil
+}
+
+func (s *server) ReadinessProbe(ctx context.Context, r *emptypb.Empty) (*emptypb.Empty, error) {
+	if !s.ready.Load() {
+		return nil, status.Error(codes.Unavailable, codes.Unavailable.String())
+	}
+	return &emptypb.Empty{}, nil
+}
+
+func (*server) ExampleGet(ctx context.Context, r *pb.ExampleRequest) (*pb.ExampleReply, error) {
+	reply := fmt.Sprintf("Hello %s", r.GetName())
+	return &pb.ExampleReply{Message: reply}, nil
+}
+
+func (*server) ExamplePost(ctx context.Context, r *pb.ExampleRequest) (*pb.ExampleReply, error) {
+	reply := fmt.Sprintf("Hello %s", r.GetName())
+	return &pb.ExampleReply{Message: reply}, nil
+}
+
+func (s *server) Download(r *pb.ExampleRequest, stream pb.API_DownloadServer) error {
+	file := bytes.NewReader([]byte("abcd"))
+	filename := r.GetName()
+	if filename == "" {
+		filename = "default.csv"
+	}
+
+	if err := stream.SetHeader(metadata.Pairs("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))); err != nil {
+		s.log.Error("error setting download header", "err", err)
+		return status.Error(codes.Unavailable, codes.Unavailable.String())
+	}
+	buff := make([]byte, 1024)
+	for {
+		n, err := file.Read(buff)
+		if err != nil && err != io.EOF {
+			s.log.Error("error reading file", "err", err, "request", r)
+			return status.Error(codes.Unavailable, codes.Unavailable.String())
+		} else if err == io.EOF {
+			break
+		}
+		msg := &httpbody.HttpBody{
+			ContentType: "text/csv",
+			Data:        buff[:n],
+		}
+		if err := stream.Send(msg); err != nil {
+			s.log.Error("error sending chunk", "err", err, "request", r)
+			return status.Error(codes.Unavailable, codes.Unavailable.String())
+		}
+	}
+	return nil
+}

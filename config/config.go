@@ -50,9 +50,39 @@ func (c *Config) LogValue() slog.Value {
 	return slog.GroupValue(values...)
 }
 
+func buildFlagSet(name string, c *Config) *flag.FlagSet {
+	flagset := flag.NewFlagSet(name, flag.ContinueOnError)
+	v := reflect.ValueOf(c).Elem()
+	for i := 0; i < v.NumField(); i++ {
+		field := v.Field(i)
+		tag := v.Type().Field(i).Tag
+		if env := tag.Get("env"); env != "" {
+			def := tag.Get("default")
+			switch field.Kind() {
+			case reflect.String:
+				flagset.String(env, def, "")
+			case reflect.Int:
+				v, err := strconv.Atoi(def)
+				if err != nil {
+					panic(err)
+				}
+				flagset.Int(env, v, "")
+			case reflect.Bool:
+				v, err := strconv.ParseBool(def)
+				if err != nil {
+					panic(err)
+				}
+				flagset.Bool(env, v, "")
+			}
+		}
+	}
+	return flagset
+}
+
 func New(lookupenv func(string) (string, bool), args []string) (*Config, error) {
 	c := Config{}
-	flagset := flag.NewFlagSet(args[0], flag.ContinueOnError)
+	flagset := buildFlagSet(args[0], &c)
+
 	if len(args) > 1 {
 		if err := flagset.Parse(args[1:]); err != nil {
 			return nil, err

@@ -22,7 +22,7 @@ type Config struct {
 	HttpShutdownGracePeriod int    `env:"HTTP_SHUTDOWN_GRACE_PERIOD" default:"30"`
 	MonitorInterval         int    `env:"MONITOR_INTERVAL" default:"5"`
 
-	PostgresEmbedded bool   `env:"POSTGRESS_EMBEDDED" default:"false"`
+	PostgresEmbedded bool   `env:"POSTGRES_EMBEDDED" default:"false"`
 	PostgresHost     string `env:"POSTGRES_HOST" default:"localhost"`
 	PostgresPort     int    `env:"POSTGRES_PORT" default:"5432"`
 	PostgresUsername string `env:"POSTGRES_USERNAME" default:"postgres"`

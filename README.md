@@ -13,7 +13,8 @@ Not ready yet.
 * Static embedding of assets
   * Self-hosting, generated swagger and swagger-ui: `http://localhost:8080/static/http/swagger-ui/`
 * Prometheus support
-* Database support (in-memory SQLite)
+* Database support
+  * Embedded postgres for development
   * Generate database code using sqlc
 * HTTP endpoints generated using protobufs
   * Get Example: `curl http://localhost:8080/api/ExampleGet?name=tinplate`

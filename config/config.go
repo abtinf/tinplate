@@ -21,7 +21,16 @@ type Config struct {
 	HttpPort                int    `env:"HTTP_PORT" default:"8080"`
 	HttpShutdownGracePeriod int    `env:"HTTP_SHUTDOWN_GRACE_PERIOD" default:"30"`
 	MonitorInterval         int    `env:"MONITOR_INTERVAL" default:"5"`
-	Password                string `env:"PASSWORD" default:"" redact:"true"`
+
+	PostgresEmbedded bool   `env:"POSTGRESS_EMBEDDED" default:"false"`
+	PostgresHost     string `env:"POSTGRES_HOST" default:"localhost"`
+	PostgresPort     int    `env:"POSTGRES_PORT" default:"5432"`
+	PostgresUsername string `env:"POSTGRES_USERNAME" default:"postgres"`
+	PostgresPassword string `env:"POSTGRES_PASSWORD" default:"postgres" redact:"true"`
+	PostgresDatabase string `env:"POSTGRES_DB" default:"postgres"`
+	PostgresSchema   string `env:"POSTGRES_SCHEMA" default:"public"`
+
+	Password string `env:"PASSWORD" default:"" redact:"true"`
 }
 
 func (c *Config) LogValue() slog.Value {

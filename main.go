@@ -6,8 +6,8 @@ import (
 	"os"
 	"os/signal"
 
-	"go-service-template/config"
-	"go-service-template/server"
+	"tinplate/config"
+	"tinplate/server"
 )
 
 func run(ctx context.Context, log *slog.Logger, lookupenv func(string) (string, bool), args []string) error {

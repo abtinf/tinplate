@@ -13,11 +13,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"go-service-template/config"
-	"go-service-template/db"
-	"go-service-template/static"
+	"tinplate/config"
+	"tinplate/db"
+	"tinplate/static"
 
-	pb "go-service-template/proto"
+	pb "tinplate/proto"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/prometheus/client_golang/prometheus/promhttp"

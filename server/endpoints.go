@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	pb "go-service-template/proto"
+	pb "tinplate/proto"
 
 	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/grpc/codes"

@@ -4,8 +4,9 @@ import (
 	"context"
 	"database/sql"
 	_ "embed"
-	"go-service-template/db/gen"
 	"log/slog"
+
+	"tinplate/db/gen"
 
 	_ "github.com/mattn/go-sqlite3"
 )

@@ -1,4 +1,4 @@
-module go-service-template
+module tinplate
 
 go 1.21.1
 

@@ -73,6 +73,12 @@ func New(lookupenv func(string) (string, bool), args []string) (*Config, error) 
 					return nil, err
 				}
 				field.SetInt(int64(v))
+			case reflect.Bool:
+				v, err := strconv.ParseBool(val)
+				if err != nil {
+					return nil, err
+				}
+				field.SetBool(v)
 			default:
 				return nil, fmt.Errorf("unsupported type %s", field.Kind())
 			}

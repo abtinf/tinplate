@@ -54,6 +54,9 @@ Protogen() {
 Sqlgen() {
 	echo "Generating SQL"
 	pushd db
+	pushd sql
+	cat `ls migrations/*.sql` > schema.sql
+	popd
 	sqlc generate
 	popd
 }

@@ -115,6 +115,28 @@
         ]
       }
     },
+    "/migrations": {
+      "get": {
+        "operationId": "API_GetMigrations",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/tinplateMigrationList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "API"
+        ]
+      }
+    },
     "/probe/live": {
       "get": {
         "operationId": "API_LivenessProbe",
@@ -252,6 +274,37 @@
       "properties": {
         "name": {
           "type": "string"
+        }
+      }
+    },
+    "tinplateMigration": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        },
+        "query": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "tinplateMigrationList": {
+      "type": "object",
+      "properties": {
+        "Migrations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/tinplateMigration"
+          }
         }
       }
     }

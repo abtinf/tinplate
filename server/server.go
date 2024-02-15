@@ -15,6 +15,7 @@ import (
 
 	"tinplate/config"
 	"tinplate/db"
+	"tinplate/db/sql/migrations"
 	"tinplate/static"
 
 	pb "tinplate/proto"
@@ -31,6 +32,7 @@ import (
 type serverConfig struct {
 	*config.Config
 	httpAddr        string
+	dsn             string
 	shutdownTimeout time.Duration
 	monitorInterval time.Duration
 }
@@ -42,6 +44,7 @@ type server struct {
 	config serverConfig
 	log    *slog.Logger
 	mux    *http.ServeMux
+	db     *db.DB
 
 	live                atomic.Bool
 	ready               atomic.Bool
@@ -58,14 +61,18 @@ New creates a new server with the provided configuration.
 */
 func New(ctx context.Context, log *slog.Logger, config *config.Config) (*server, error) {
 	s := &server{
-		ctx:        ctx,
-		log:        log,
-		config:     serverConfig{Config: config},
+		ctx:    ctx,
+		config: serverConfig{Config: config},
+		log:    log,
+
 		httpClosed: make(chan bool),
 	}
 	s.config.monitorInterval = time.Duration(config.MonitorInterval) * time.Second
 	s.config.shutdownTimeout = time.Duration(config.HttpShutdownGracePeriod) * time.Second
 	s.config.httpAddr = net.JoinHostPort(config.HttpHost, strconv.Itoa(config.HttpPort))
+	s.config.dsn = fmt.Sprintf("postgres://%s:%s@%s:%d/%s?search_path=%s", config.PostgresUsername, config.PostgresPassword, config.PostgresHost, config.PostgresPort, config.PostgresDatabase, config.PostgresSchema)
+	s.db = db.New(s.ctx, s.config.dsn, log)
+
 	s.live.Store(false)
 	s.ready.Store(false)
 	s.shutdownRequested.Store(false)
@@ -111,12 +118,15 @@ func (s *server) ListenAndServe() error {
 	go s.listenAndServe()
 	go s.liveMonitor()
 	go s.readyMonitor()
+	go s.dbMonitor()
 
-	if err := db.Migrate(s.ctx); err != nil {
+	if err := s.db.Connect(); err != nil {
+		return fmt.Errorf("failed to connect to database: %w", err)
+	}
+	if err := migrations.Migrate(s.ctx, s.log, s.db); err != nil {
 		s.log.Error("db migration failed", "err", err)
 		return nil
 	}
-	go s.dbMonitor()
 
 	for {
 		select {

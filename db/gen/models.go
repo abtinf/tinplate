@@ -5,11 +5,19 @@
 package gen
 
 import (
-	"database/sql"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Foo struct {
-	ID  int64
-	Foo string
-	Bar sql.NullInt64
+	ID        int32
+	CreatedAt pgtype.Timestamp
+	Foo       string
+	Bar       pgtype.Int4
+}
+
+type Migration struct {
+	ID        int32
+	Name      string
+	Query     string
+	CreatedAt pgtype.Timestamp
 }

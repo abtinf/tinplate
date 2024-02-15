@@ -8,6 +8,7 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 
 //well-known types
 import "google/protobuf/empty.proto";
+import "google/protobuf/Timestamp.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     info: {
@@ -53,6 +54,12 @@ service API {
             get: "/download"
         };
     }
+
+    rpc GetMigrations (google.protobuf.Empty) returns (MigrationList) {
+        option (google.api.http) = {
+            get: "/migrations"
+        };
+    }
 }
 
 message ExampleRequest {
@@ -61,4 +68,15 @@ message ExampleRequest {
 
 message ExampleReply {
     string message = 1;
+}
+
+message Migration {
+    int32 id = 1;
+    string name = 2;
+    string query = 3;
+    google.protobuf.Timestamp created_at = 4;
+}
+
+message MigrationList {
+    repeated Migration Migrations = 1;
 }

@@ -27,6 +27,7 @@ const (
 	API_ExampleGet_FullMethodName     = "/tinplate.API/ExampleGet"
 	API_ExamplePost_FullMethodName    = "/tinplate.API/ExamplePost"
 	API_Download_FullMethodName       = "/tinplate.API/Download"
+	API_GetMigrations_FullMethodName  = "/tinplate.API/GetMigrations"
 )
 
 // APIClient is the client API for API service.
@@ -39,6 +40,7 @@ type APIClient interface {
 	ExampleGet(ctx context.Context, in *ExampleRequest, opts ...grpc.CallOption) (*ExampleReply, error)
 	ExamplePost(ctx context.Context, in *ExampleRequest, opts ...grpc.CallOption) (*ExampleReply, error)
 	Download(ctx context.Context, in *ExampleRequest, opts ...grpc.CallOption) (API_DownloadClient, error)
+	GetMigrations(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*MigrationList, error)
 }
 
 type aPIClient struct {
@@ -126,6 +128,15 @@ func (x *aPIDownloadClient) Recv() (*httpbody.HttpBody, error) {
 	return m, nil
 }
 
+func (c *aPIClient) GetMigrations(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*MigrationList, error) {
+	out := new(MigrationList)
+	err := c.cc.Invoke(ctx, API_GetMigrations_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // APIServer is the server API for API service.
 // All implementations must embed UnimplementedAPIServer
 // for forward compatibility
@@ -136,6 +147,7 @@ type APIServer interface {
 	ExampleGet(context.Context, *ExampleRequest) (*ExampleReply, error)
 	ExamplePost(context.Context, *ExampleRequest) (*ExampleReply, error)
 	Download(*ExampleRequest, API_DownloadServer) error
+	GetMigrations(context.Context, *emptypb.Empty) (*MigrationList, error)
 	mustEmbedUnimplementedAPIServer()
 }
 
@@ -160,6 +172,9 @@ func (UnimplementedAPIServer) ExamplePost(context.Context, *ExampleRequest) (*Ex
 }
 func (UnimplementedAPIServer) Download(*ExampleRequest, API_DownloadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Download not implemented")
+}
+func (UnimplementedAPIServer) GetMigrations(context.Context, *emptypb.Empty) (*MigrationList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMigrations not implemented")
 }
 func (UnimplementedAPIServer) mustEmbedUnimplementedAPIServer() {}
 
@@ -285,6 +300,24 @@ func (x *aPIDownloadServer) Send(m *httpbody.HttpBody) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _API_GetMigrations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServer).GetMigrations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: API_GetMigrations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServer).GetMigrations(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // API_ServiceDesc is the grpc.ServiceDesc for API service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -311,6 +344,10 @@ var API_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ExamplePost",
 			Handler:    _API_ExamplePost_Handler,
+		},
+		{
+			MethodName: "GetMigrations",
+			Handler:    _API_GetMigrations_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

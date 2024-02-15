@@ -7,42 +7,147 @@ package gen
 
 import (
 	"context"
-	"database/sql"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const awaitMigrationLock = `-- name: AwaitMigrationLock :exec
+SELECT pg_advisory_lock(1)
+`
+
+func (q *Queries) AwaitMigrationLock(ctx context.Context) error {
+	_, err := q.db.Exec(ctx, awaitMigrationLock)
+	return err
+}
+
 const createFoo = `-- name: CreateFoo :one
-INSERT INTO foo (foo, bar) VALUES (?, ?) RETURNING id, foo, bar
+INSERT INTO foo (foo, bar)
+VALUES ($1, $2)
+RETURNING id, created_at, foo, bar
 `
 
 type CreateFooParams struct {
 	Foo string
-	Bar sql.NullInt64
+	Bar pgtype.Int4
 }
 
 func (q *Queries) CreateFoo(ctx context.Context, arg CreateFooParams) (Foo, error) {
-	row := q.db.QueryRowContext(ctx, createFoo, arg.Foo, arg.Bar)
+	row := q.db.QueryRow(ctx, createFoo, arg.Foo, arg.Bar)
 	var i Foo
-	err := row.Scan(&i.ID, &i.Foo, &i.Bar)
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Foo,
+		&i.Bar,
+	)
 	return i, err
+}
+
+const deleteFoo = `-- name: DeleteFoo :exec
+DELETE FROM foo
+WHERE
+	id = $1
+`
+
+func (q *Queries) DeleteFoo(ctx context.Context, id int32) error {
+	_, err := q.db.Exec(ctx, deleteFoo, id)
+	return err
 }
 
 const getFoo = `-- name: GetFoo :one
-SELECT id, foo, bar FROM foo WHERE id = ?
+SELECT
+	id, created_at, foo, bar
+FROM
+	foo
+WHERE
+	id = $1
 `
 
-func (q *Queries) GetFoo(ctx context.Context, id int64) (Foo, error) {
-	row := q.db.QueryRowContext(ctx, getFoo, id)
+func (q *Queries) GetFoo(ctx context.Context, id int32) (Foo, error) {
+	row := q.db.QueryRow(ctx, getFoo, id)
 	var i Foo
-	err := row.Scan(&i.ID, &i.Foo, &i.Bar)
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Foo,
+		&i.Bar,
+	)
 	return i, err
 }
 
+const insertMigration = `-- name: InsertMigration :one
+INSERT INTO migration (name, query) VALUES ($1, $2) RETURNING id, name, query, created_at
+`
+
+type InsertMigrationParams struct {
+	Name  string
+	Query string
+}
+
+func (q *Queries) InsertMigration(ctx context.Context, arg InsertMigrationParams) (Migration, error) {
+	row := q.db.QueryRow(ctx, insertMigration, arg.Name, arg.Query)
+	var i Migration
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Query,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const insertMigrationIfTableEmpty = `-- name: InsertMigrationIfTableEmpty :exec
+INSERT INTO migration (name, query) SELECT $1, $2 WHERE NOT EXISTS (SELECT 1 FROM migration)
+`
+
+type InsertMigrationIfTableEmptyParams struct {
+	Name  string
+	Query string
+}
+
+func (q *Queries) InsertMigrationIfTableEmpty(ctx context.Context, arg InsertMigrationIfTableEmptyParams) error {
+	_, err := q.db.Exec(ctx, insertMigrationIfTableEmpty, arg.Name, arg.Query)
+	return err
+}
+
+const listAllMigrations = `-- name: ListAllMigrations :many
+SELECT id, name, query, created_at FROM migration ORDER BY id
+`
+
+func (q *Queries) ListAllMigrations(ctx context.Context) ([]Migration, error) {
+	rows, err := q.db.Query(ctx, listAllMigrations)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Migration
+	for rows.Next() {
+		var i Migration
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Query,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listFoos = `-- name: ListFoos :many
-SELECT id, foo, bar FROM foo
+SELECT
+	id, created_at, foo, bar
+FROM
+	foo
 `
 
 func (q *Queries) ListFoos(ctx context.Context) ([]Foo, error) {
-	rows, err := q.db.QueryContext(ctx, listFoos)
+	rows, err := q.db.Query(ctx, listFoos)
 	if err != nil {
 		return nil, err
 	}
@@ -50,16 +155,76 @@ func (q *Queries) ListFoos(ctx context.Context) ([]Foo, error) {
 	var items []Foo
 	for rows.Next() {
 		var i Foo
-		if err := rows.Scan(&i.ID, &i.Foo, &i.Bar); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Foo,
+			&i.Bar,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 	return items, nil
+}
+
+const mostRecentMigration = `-- name: MostRecentMigration :one
+SELECT id, name, query, created_at FROM migration ORDER BY id DESC LIMIT 1
+`
+
+func (q *Queries) MostRecentMigration(ctx context.Context) (Migration, error) {
+	row := q.db.QueryRow(ctx, mostRecentMigration)
+	var i Migration
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Query,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const releaseMigrationLock = `-- name: ReleaseMigrationLock :one
+SELECT pg_advisory_unlock(1)
+`
+
+func (q *Queries) ReleaseMigrationLock(ctx context.Context) (bool, error) {
+	row := q.db.QueryRow(ctx, releaseMigrationLock)
+	var pg_advisory_unlock bool
+	err := row.Scan(&pg_advisory_unlock)
+	return pg_advisory_unlock, err
+}
+
+const tryMigrationLock = `-- name: TryMigrationLock :one
+SELECT pg_try_advisory_lock(1)
+`
+
+func (q *Queries) TryMigrationLock(ctx context.Context) (bool, error) {
+	row := q.db.QueryRow(ctx, tryMigrationLock)
+	var pg_try_advisory_lock bool
+	err := row.Scan(&pg_try_advisory_lock)
+	return pg_try_advisory_lock, err
+}
+
+const updateFoo = `-- name: UpdateFoo :exec
+UPDATE foo
+SET
+	foo = $1,
+	bar = $2
+WHERE
+	id = $3
+`
+
+type UpdateFooParams struct {
+	Foo string
+	Bar pgtype.Int4
+	ID  int32
+}
+
+func (q *Queries) UpdateFoo(ctx context.Context, arg UpdateFooParams) error {
+	_, err := q.db.Exec(ctx, updateFoo, arg.Foo, arg.Bar, arg.ID)
+	return err
 }

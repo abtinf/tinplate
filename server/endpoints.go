@@ -13,6 +13,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *server) StartupProbe(ctx context.Context, r *emptypb.Empty) (*emptypb.Empty, error) {
@@ -73,4 +74,24 @@ func (s *server) Download(r *pb.ExampleRequest, stream pb.API_DownloadServer) er
 		}
 	}
 	return nil
+}
+
+func (s *server) GetMigrations(ctx context.Context, _ *emptypb.Empty) (*pb.MigrationList, error) {
+	rows, err := s.db.Queries.ListAllMigrations(ctx)
+	if err != nil {
+		s.log.Error("error getting migrations", "err", err)
+		return nil, status.Error(codes.Unavailable, codes.Unavailable.String())
+	}
+	result := &pb.MigrationList{
+		Migrations: make([]*pb.Migration, 0),
+	}
+	for _, row := range rows {
+		result.Migrations = append(result.Migrations, &pb.Migration{
+			Id:        row.ID,
+			Name:      row.Name,
+			Query:     row.Query,
+			CreatedAt: timestamppb.New(row.CreatedAt.Time),
+		})
+	}
+	return result, nil
 }

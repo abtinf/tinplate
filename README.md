@@ -10,20 +10,25 @@ Not ready yet.
 * Structured logging with redaction of configuration secrets
 * Probe monitor endpoints for startup, liveness, and readiness
 * Graceful shutdown
-* Static embedding of assets
-  * Self-hosting, generated swagger and swagger-ui: `http://localhost:8080/static/http/swagger-ui/`
 * Prometheus support
 * Database support
+  * Postgres
   * Embedded postgres for development
   * Generate database code using sqlc
+  * Migration leadership
 * HTTP endpoints generated using protobufs
-  * Get Example: `curl http://localhost:8080/api/ExampleGet?name=tinplate`
-  * Post Example: `curl -X 'POST' 'http://localhost:8080/api/ExamplePost' -d '{"name": "tinplate"}'`
-  * Download example: `curl http://localhost:8080/api/download`
+  * Unencrypted HTTP/2
+  * Generated swagger and self-hosted swagger-ui: `http://localhost:8080/static/http/swagger-ui/`
 * Middleware
   * Logging 
   * Protocol upgrade (HTTP and GRPC served on same port)
-* Unencrypted HTTP/2
+* Resiliency
+  * Service dependency monitoring
+    * DB
+* Build and depoy
+  * Static embedding of assets
+* Developer QoL
+  * Visual Studio Code config (f5 to run, environment, etc)
 
 
 ## TODO
@@ -45,10 +50,8 @@ Not ready yet.
 * Middleware
   * CORS
 * Database Support
-  * Postgres
   * DB migrations
-  * DB leadership
-  * Replace sqlite with embedded postgres
+  * Monitor database for migration changes
 * TLS support
   * Certificate loading
   * Use h2c if no cert available
@@ -58,9 +61,6 @@ Not ready yet.
   * Audit log
   * RBAC
   * OAUTH/JWT validation
-* Resiliency
-  * Service dependency monitoring
-    * DB
 * Observability
   * Instrument calls and add custom metrics to prometheus
   * Tracing middleware
@@ -79,7 +79,6 @@ Not ready yet.
   * Instructions for adding config parameters
   * Add comments and generate godoc
 * Developer QoL
-  * Visual Studio Code config (f5 to run, environment, etc)
   * Hot reload for server and UI
   * Admin interface/API
   * Basic UI

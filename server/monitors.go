@@ -27,7 +27,7 @@ func (s *server) readyMonitor() {
 func (s *server) dbMonitor() {
 	t := time.Tick(s.config.monitorInterval)
 	for range t {
-		dbAvailable := true
+		dbAvailable := s.db.TestConnection() == nil
 		if s.databaseAvailable.CompareAndSwap(!dbAvailable, dbAvailable) {
 			s.log.Info("database health changed", "available", dbAvailable)
 		}

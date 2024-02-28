@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -37,26 +36,27 @@ func run(ctx context.Context, log *slog.Logger, lookupenv func(string) (string, 
 			Logger(initlogs).
 			CachePath(filepath.Join(os.TempDir(), "embedded-postgres")))
 		if err := pg.Start(); err != nil {
-			return fmt.Errorf("failed to start embedded postgres: %w", err)
-		}
-		log.Info("embedded postgres started", "logs", initlogs.String())
-		initlogs.Reset()
-		go func() {
-			t := time.Tick(time.Duration(c.MonitorInterval) * time.Second)
-			for range t {
-				l := initlogs.String()
-				if l != "" {
-					log.Info("embedded postgres logs", "logs", l)
-					initlogs.Reset()
+			log.Error("failed to started embedded postgres; server may already be running", "error", err)
+		} else {
+			log.Info("embedded postgres started", "logs", initlogs.String())
+			initlogs.Reset()
+			go func() {
+				t := time.Tick(time.Duration(c.MonitorInterval) * time.Second)
+				for range t {
+					l := initlogs.String()
+					if l != "" {
+						log.Info("embedded postgres logs", "logs", l)
+						initlogs.Reset()
+					}
 				}
-			}
-		}()
-		defer func() {
-			if err := pg.Stop(); err != nil {
-				log.Error("failed to stop embedded postgres", "error", err)
-			}
-			log.Info("embedded postgres stopped", "logs", initlogs.String())
-		}()
+			}()
+			defer func() {
+				if err := pg.Stop(); err != nil {
+					log.Error("failed to stop embedded postgres", "error", err)
+				}
+				log.Info("embedded postgres stopped", "logs", initlogs.String())
+			}()
+		}
 	}
 
 	srv, err := server.New(ctx, log, c)

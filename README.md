@@ -18,7 +18,7 @@ Not ready yet.
   * Migration leadership
 * HTTP endpoints generated using protobufs
   * Unencrypted HTTP/2
-  * Generated swagger and self-hosted swagger-ui: `http://localhost:8080/static/http/swagger-ui/`
+  * Generated swagger and self-hosted swagger-ui: `http://localhost:8080/static/swagger-ui/`
 * Middleware
   * Logging 
   * Protocol upgrade (HTTP and GRPC served on same port)

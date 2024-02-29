@@ -5,33 +5,35 @@ An implementation of a production-ready service written in Go.
 Not ready yet.
 
 ## Features
-* `manage.sh` script to handle common tasks
-* Configuration with flowdown from defaults, environment variables, and command line arguments
-* Structured logging with redaction of configuration secrets
-* Probe monitor endpoints for startup, liveness, and readiness
-* Graceful shutdown
-* Prometheus support
+* Observability
+  * Prometheus support
+  * Structured logging with redaction of configuration secrets
+* Ops
+  * Probe monitor endpoints for startup, liveness, and readiness
+  * Graceful shutdown
 * Database support
   * Postgres
   * Embedded postgres for development
-  * Generate database code using sqlc
   * Migration leadership
-* HTTP endpoints generated using protobufs
-  * Unencrypted HTTP/2
-* Static asset hosting
-  * Does not expose directory contents of static assets
-  * Generated swagger and self-hosted swagger-ui: `http://localhost:8080/static/swagger-ui/`
+* Code Generation
+  * HTTP endpoints generated using protobufs
+    * Unencrypted HTTP/2
+  * Database code generated using sqlc
 * Middleware
   * Logging 
   * Protocol upgrade (HTTP and GRPC served on same port)
 * Resiliency
   * Service dependency monitoring
     * DB
-* Build and depoy
-  * Static embedding of assets
+* Build and deploy
+  * Static asset hosting
+    * Generated swagger and self-hosted swagger-ui: `http://localhost:8080/static/swagger-ui/`
+    * Does not expose directory contents of static assets
+    * Root favicon
 * Developer QoL
   * Visual Studio Code config (f5 to run, environment, etc)
-
+  * `manage.sh` script to handle common tasks
+  * Configuration with flowdown from defaults, environment variables, and command line arguments
 
 ## TODO
 * Endpoint Example
@@ -42,8 +44,6 @@ Not ready yet.
   * Custom HTTP status code return
   * File upload
   * Business logic calls
-* HTTP
-  * Favicon
 * Interop
   * Client libraries
     * React
@@ -52,11 +52,10 @@ Not ready yet.
 * Middleware
   * CORS
 * Database Support
-  * DB migrations
   * Monitor database for migration changes
 * TLS support
   * Certificate loading
-  * Use h2c if no cert available
+  * Only use h2c if no cert available
   * Let's Encrypt
 * Security & Auditability
   * Rate limiting
@@ -94,9 +93,6 @@ Not ready yet.
   * Helm charts/kubernetes/local deploy support
   * Add build to manage.sh
   * Dockerfile
-* Bugs
-  * Fix static file path (includes http right now)
-  * Don't list directory contents of static
 
 ## Getting Started
 * Install sqlc

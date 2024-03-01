@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -23,40 +24,16 @@ func run(ctx context.Context, log *slog.Logger, lookupenv func(string) (string, 
 	log.Info("config", "parameters", c)
 
 	if c.PostgresEmbedded {
-		initlogs := &bytes.Buffer{}
-		//Config is not go-idiomatic.
-		//None of the config methods do anything but set the private field.
-		//Also performs os.RemoveAll against Cachepath.
-		//Candidate for a PR or, failing that, a fork.
-		pg := embedpg.NewDatabase(embedpg.DefaultConfig().
-			Port(uint32(c.PostgresPort)).
-			Username(c.PostgresUsername).
-			Password(c.PostgresPassword).
-			Database(c.PostgresDatabase).
-			Logger(initlogs).
-			CachePath(filepath.Join(os.TempDir(), "embedded-postgres")))
-		if err := pg.Start(); err != nil {
-			log.Error("failed to started embedded postgres; server may already be running", "error", err)
-		} else {
-			log.Info("embedded postgres started", "logs", initlogs.String())
-			initlogs.Reset()
-			go func() {
-				t := time.Tick(time.Duration(c.MonitorInterval) * time.Second)
-				for range t {
-					l := initlogs.String()
-					if l != "" {
-						log.Info("embedded postgres logs", "logs", l)
-						initlogs.Reset()
-					}
-				}
-			}()
-			defer func() {
-				if err := pg.Stop(); err != nil {
-					log.Error("failed to stop embedded postgres", "error", err)
-				}
-				log.Info("embedded postgres stopped", "logs", initlogs.String())
-			}()
+		pg, err := initEmbeddedPostgres(c, log)
+		if err != nil {
+			log.Error("failed to start embedded postgres", "error", err)
 		}
+		defer func() {
+			if err := pg.Stop(); err != nil {
+				log.Error("failed to stop embedded postgres", "error", err)
+			}
+			log.Info("embedded postgres stopped")
+		}()
 	}
 
 	srv, err := server.New(ctx, log, c)
@@ -79,4 +56,35 @@ func main() {
 		os.Exit(1)
 	}
 	log.Info("server stopped")
+}
+
+func initEmbeddedPostgres(c *config.Config, log *slog.Logger) (*embedpg.EmbeddedPostgres, error) {
+	initlogs := &bytes.Buffer{}
+	//Config is not go-idiomatic.
+	//None of the config methods do anything but set the private field.
+	//Also performs os.RemoveAll against Cachepath.
+	//Candidate for a PR or, failing that, a fork.
+	pg := embedpg.NewDatabase(embedpg.DefaultConfig().
+		Port(uint32(c.PostgresPort)).
+		Username(c.PostgresUsername).
+		Password(c.PostgresPassword).
+		Database(c.PostgresDatabase).
+		Logger(initlogs).
+		CachePath(filepath.Join(os.TempDir(), "embedded-postgres")))
+	if err := pg.Start(); err != nil {
+		return nil, fmt.Errorf("server may already be running: %w", err)
+	}
+	log.Info("embedded postgres started", "logs", initlogs.String())
+	initlogs.Reset()
+	go func() {
+		t := time.Tick(time.Duration(c.MonitorInterval) * time.Second)
+		for range t {
+			l := initlogs.String()
+			if l != "" {
+				log.Info("embedded postgres logs", "logs", l)
+				initlogs.Reset()
+			}
+		}
+	}()
+	return pg, nil
 }

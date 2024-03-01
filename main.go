@@ -27,13 +27,14 @@ func run(ctx context.Context, log *slog.Logger, lookupenv func(string) (string, 
 		pg, err := initEmbeddedPostgres(c, log)
 		if err != nil {
 			log.Error("failed to start embedded postgres", "error", err)
+		} else {
+			defer func() {
+				if err := pg.Stop(); err != nil {
+					log.Error("failed to stop embedded postgres", "error", err)
+				}
+				log.Info("embedded postgres stopped")
+			}()
 		}
-		defer func() {
-			if err := pg.Stop(); err != nil {
-				log.Error("failed to stop embedded postgres", "error", err)
-			}
-			log.Info("embedded postgres stopped")
-		}()
 	}
 
 	srv, err := server.New(ctx, log, c)

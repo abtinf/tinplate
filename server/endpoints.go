@@ -16,24 +16,6 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func (s *server) StartupProbe(ctx context.Context, r *emptypb.Empty) (*emptypb.Empty, error) {
-	return &emptypb.Empty{}, nil
-}
-
-func (s *server) LivenessProbe(ctx context.Context, r *emptypb.Empty) (*emptypb.Empty, error) {
-	if !s.live.Load() {
-		return nil, status.Error(codes.Unavailable, codes.Unavailable.String())
-	}
-	return &emptypb.Empty{}, nil
-}
-
-func (s *server) ReadinessProbe(ctx context.Context, r *emptypb.Empty) (*emptypb.Empty, error) {
-	if !s.ready.Load() {
-		return nil, status.Error(codes.Unavailable, codes.Unavailable.String())
-	}
-	return &emptypb.Empty{}, nil
-}
-
 func (*server) ExampleGet(ctx context.Context, r *pb.ExampleRequest) (*pb.ExampleReply, error) {
 	reply := fmt.Sprintf("Hello %s", r.GetName())
 	return &pb.ExampleReply{Message: reply}, nil

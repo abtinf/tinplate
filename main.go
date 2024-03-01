@@ -12,8 +12,8 @@ import (
 
 	embedpg "github.com/fergusstrange/embedded-postgres"
 
-	"tinplate/config"
-	"tinplate/server"
+	"gonfoot/config"
+	"gonfoot/server"
 )
 
 func run(ctx context.Context, log *slog.Logger, lookupenv func(string) (string, bool), args []string) error {

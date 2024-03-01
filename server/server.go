@@ -13,12 +13,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"tinplate/config"
-	"tinplate/db"
-	"tinplate/db/sql/migrations"
-	"tinplate/static"
+	"gonfoot/config"
+	"gonfoot/db"
+	"gonfoot/db/sql/migrations"
+	"gonfoot/static"
 
-	pb "tinplate/proto"
+	pb "gonfoot/proto"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/prometheus/client_golang/prometheus/promhttp"

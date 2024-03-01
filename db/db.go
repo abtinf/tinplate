@@ -2,8 +2,8 @@ package db
 
 import (
 	"context"
+	"gonfoot/db/gen"
 	"log/slog"
-	"tinplate/db/gen"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"

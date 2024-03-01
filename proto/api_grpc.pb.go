@@ -21,13 +21,13 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	API_StartupProbe_FullMethodName   = "/tinplate.API/StartupProbe"
-	API_LivenessProbe_FullMethodName  = "/tinplate.API/LivenessProbe"
-	API_ReadinessProbe_FullMethodName = "/tinplate.API/ReadinessProbe"
-	API_ExampleGet_FullMethodName     = "/tinplate.API/ExampleGet"
-	API_ExamplePost_FullMethodName    = "/tinplate.API/ExamplePost"
-	API_Download_FullMethodName       = "/tinplate.API/Download"
-	API_GetMigrations_FullMethodName  = "/tinplate.API/GetMigrations"
+	API_StartupProbe_FullMethodName   = "/gonfoot.API/StartupProbe"
+	API_LivenessProbe_FullMethodName  = "/gonfoot.API/LivenessProbe"
+	API_ReadinessProbe_FullMethodName = "/gonfoot.API/ReadinessProbe"
+	API_ExampleGet_FullMethodName     = "/gonfoot.API/ExampleGet"
+	API_ExamplePost_FullMethodName    = "/gonfoot.API/ExamplePost"
+	API_Download_FullMethodName       = "/gonfoot.API/Download"
+	API_GetMigrations_FullMethodName  = "/gonfoot.API/GetMigrations"
 )
 
 // APIClient is the client API for API service.
@@ -322,7 +322,7 @@ func _API_GetMigrations_Handler(srv interface{}, ctx context.Context, dec func(i
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var API_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "tinplate.API",
+	ServiceName: "gonfoot.API",
 	HandlerType: (*APIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

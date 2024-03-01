@@ -1,4 +1,4 @@
-# Tinplate - A Go Service Template
+# Gonfoot - A Footgun-Free Go Service Template
 
 An implementation of a production-ready service written in Go.
 

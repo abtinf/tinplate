@@ -332,31 +332,31 @@ func file_api_proto_rawDescGZIP() []byte {
 
 var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_api_proto_goTypes = []interface{}{
-	(*ExampleRequest)(nil),        // 0: tinplate.ExampleRequest
-	(*ExampleReply)(nil),          // 1: tinplate.ExampleReply
-	(*Migration)(nil),             // 2: tinplate.Migration
-	(*MigrationList)(nil),         // 3: tinplate.MigrationList
+	(*ExampleRequest)(nil),        // 0: gonfoot.ExampleRequest
+	(*ExampleReply)(nil),          // 1: gonfoot.ExampleReply
+	(*Migration)(nil),             // 2: gonfoot.Migration
+	(*MigrationList)(nil),         // 3: gonfoot.MigrationList
 	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
 	(*emptypb.Empty)(nil),         // 5: google.protobuf.Empty
 	(*httpbody.HttpBody)(nil),     // 6: google.api.HttpBody
 }
 var file_api_proto_depIdxs = []int32{
-	4, // 0: tinplate.Migration.created_at:type_name -> google.protobuf.Timestamp
-	2, // 1: tinplate.MigrationList.Migrations:type_name -> tinplate.Migration
-	5, // 2: tinplate.API.StartupProbe:input_type -> google.protobuf.Empty
-	5, // 3: tinplate.API.LivenessProbe:input_type -> google.protobuf.Empty
-	5, // 4: tinplate.API.ReadinessProbe:input_type -> google.protobuf.Empty
-	0, // 5: tinplate.API.ExampleGet:input_type -> tinplate.ExampleRequest
-	0, // 6: tinplate.API.ExamplePost:input_type -> tinplate.ExampleRequest
-	0, // 7: tinplate.API.Download:input_type -> tinplate.ExampleRequest
-	5, // 8: tinplate.API.GetMigrations:input_type -> google.protobuf.Empty
-	5, // 9: tinplate.API.StartupProbe:output_type -> google.protobuf.Empty
-	5, // 10: tinplate.API.LivenessProbe:output_type -> google.protobuf.Empty
-	5, // 11: tinplate.API.ReadinessProbe:output_type -> google.protobuf.Empty
-	1, // 12: tinplate.API.ExampleGet:output_type -> tinplate.ExampleReply
-	1, // 13: tinplate.API.ExamplePost:output_type -> tinplate.ExampleReply
-	6, // 14: tinplate.API.Download:output_type -> google.api.HttpBody
-	3, // 15: tinplate.API.GetMigrations:output_type -> tinplate.MigrationList
+	4, // 0: gonfoot.Migration.created_at:type_name -> google.protobuf.Timestamp
+	2, // 1: gonfoot.MigrationList.Migrations:type_name -> gonfoot.Migration
+	5, // 2: gonfoot.API.StartupProbe:input_type -> google.protobuf.Empty
+	5, // 3: gonfoot.API.LivenessProbe:input_type -> google.protobuf.Empty
+	5, // 4: gonfoot.API.ReadinessProbe:input_type -> google.protobuf.Empty
+	0, // 5: gonfoot.API.ExampleGet:input_type -> gonfoot.ExampleRequest
+	0, // 6: gonfoot.API.ExamplePost:input_type -> gonfoot.ExampleRequest
+	0, // 7: gonfoot.API.Download:input_type -> gonfoot.ExampleRequest
+	5, // 8: gonfoot.API.GetMigrations:input_type -> google.protobuf.Empty
+	5, // 9: gonfoot.API.StartupProbe:output_type -> google.protobuf.Empty
+	5, // 10: gonfoot.API.LivenessProbe:output_type -> google.protobuf.Empty
+	5, // 11: gonfoot.API.ReadinessProbe:output_type -> google.protobuf.Empty
+	1, // 12: gonfoot.API.ExampleGet:output_type -> gonfoot.ExampleReply
+	1, // 13: gonfoot.API.ExamplePost:output_type -> gonfoot.ExampleReply
+	6, // 14: gonfoot.API.Download:output_type -> google.api.HttpBody
+	3, // 15: gonfoot.API.GetMigrations:output_type -> gonfoot.MigrationList
 	9, // [9:16] is the sub-list for method output_type
 	2, // [2:9] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

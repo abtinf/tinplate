@@ -208,7 +208,7 @@ func RegisterAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/tinplate.API/StartupProbe", runtime.WithHTTPPathPattern("/probe/startup"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gonfoot.API/StartupProbe", runtime.WithHTTPPathPattern("/probe/startup"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -233,7 +233,7 @@ func RegisterAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/tinplate.API/LivenessProbe", runtime.WithHTTPPathPattern("/probe/live"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gonfoot.API/LivenessProbe", runtime.WithHTTPPathPattern("/probe/live"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -258,7 +258,7 @@ func RegisterAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/tinplate.API/ReadinessProbe", runtime.WithHTTPPathPattern("/probe/ready"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gonfoot.API/ReadinessProbe", runtime.WithHTTPPathPattern("/probe/ready"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -283,7 +283,7 @@ func RegisterAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/tinplate.API/ExampleGet", runtime.WithHTTPPathPattern("/ExampleGet"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gonfoot.API/ExampleGet", runtime.WithHTTPPathPattern("/ExampleGet"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -308,7 +308,7 @@ func RegisterAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/tinplate.API/ExamplePost", runtime.WithHTTPPathPattern("/ExamplePost"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gonfoot.API/ExamplePost", runtime.WithHTTPPathPattern("/ExamplePost"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -340,7 +340,7 @@ func RegisterAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/tinplate.API/GetMigrations", runtime.WithHTTPPathPattern("/migrations"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/gonfoot.API/GetMigrations", runtime.WithHTTPPathPattern("/migrations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -404,7 +404,7 @@ func RegisterAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/tinplate.API/StartupProbe", runtime.WithHTTPPathPattern("/probe/startup"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gonfoot.API/StartupProbe", runtime.WithHTTPPathPattern("/probe/startup"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -426,7 +426,7 @@ func RegisterAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/tinplate.API/LivenessProbe", runtime.WithHTTPPathPattern("/probe/live"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gonfoot.API/LivenessProbe", runtime.WithHTTPPathPattern("/probe/live"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -448,7 +448,7 @@ func RegisterAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/tinplate.API/ReadinessProbe", runtime.WithHTTPPathPattern("/probe/ready"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gonfoot.API/ReadinessProbe", runtime.WithHTTPPathPattern("/probe/ready"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -470,7 +470,7 @@ func RegisterAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/tinplate.API/ExampleGet", runtime.WithHTTPPathPattern("/ExampleGet"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gonfoot.API/ExampleGet", runtime.WithHTTPPathPattern("/ExampleGet"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -492,7 +492,7 @@ func RegisterAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/tinplate.API/ExamplePost", runtime.WithHTTPPathPattern("/ExamplePost"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gonfoot.API/ExamplePost", runtime.WithHTTPPathPattern("/ExamplePost"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -514,7 +514,7 @@ func RegisterAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/tinplate.API/Download", runtime.WithHTTPPathPattern("/download"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gonfoot.API/Download", runtime.WithHTTPPathPattern("/download"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -536,7 +536,7 @@ func RegisterAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/tinplate.API/GetMigrations", runtime.WithHTTPPathPattern("/migrations"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/gonfoot.API/GetMigrations", runtime.WithHTTPPathPattern("/migrations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

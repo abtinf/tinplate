@@ -2,8 +2,8 @@ package static
 
 import (
 	"embed"
+	"gonfoot/internal/nolsfs"
 	"io/fs"
-	"tinplate/internal/nolsfs"
 )
 
 //go:embed http

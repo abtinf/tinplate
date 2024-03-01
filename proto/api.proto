@@ -1,6 +1,6 @@
 syntax = "proto3";
-package tinplate;
-option go_package = "github.com/abtinf/tinplate/proto";
+package gonfoot;
+option go_package = "github.com/abtinf/gonfoot/proto";
 
 import "google/api/annotations.proto";
 import "google/api/httpbody.proto";
@@ -12,7 +12,7 @@ import "google/protobuf/Timestamp.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     info: {
-        title: "tinplate";
+        title: "gonfoot";
         version: "1";
         license: {
             name: "Copyright 2023 Abtin Forouzandeh Tabrizi. All Rights Reserved.";

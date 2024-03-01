@@ -4,10 +4,10 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"gonfoot/db"
+	"gonfoot/db/gen"
 	"log/slog"
 	"slices"
-	"tinplate/db"
-	"tinplate/db/gen"
 
 	"github.com/jackc/pgx/v5"
 )

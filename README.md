@@ -110,6 +110,8 @@ Will be ready soon.
   - Certificate loading
 - Build & Deploy
   - Helm charts/kubernetes/local deploy support
+  - Package as standalone app
+  - Minify static assets
 - Endpoint Example
   - basic auth
   - JWT
@@ -118,6 +120,10 @@ Will be ready soon.
   - Custom HTTP status code return
   - File upload
   - Business logic calls
+  - Cookie/session support with encryption
+- Web UI
+  - Basic UI
+  - i18n
 
 ## Getting Started
 

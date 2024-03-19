@@ -1,6 +1,7 @@
 package server
 
 import (
+	"crypto/subtle"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -50,6 +51,20 @@ func onlyWhenReady(s *server, handler http.Handler) http.Handler {
 			s.log.Info("service called when not ready", "method", r.Method, "url", r.URL.Redacted())
 			return
 		}
+		handler.ServeHTTP(w, r)
+	})
+}
+
+func requireBasicAuth(s *server, handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		user, pass, ok := r.BasicAuth()
+		if !ok || subtle.ConstantTimeCompare([]byte(user), []byte(s.config.ExampleBasicAuthUser)) != 1 || subtle.ConstantTimeCompare([]byte(pass), []byte(s.config.ExampleBasicAuthPassword)) != 1 {
+			s.log.Info("unauthorized request", "method", r.Method, "url", r.URL.Redacted(), "user", user)
+			w.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+		s.log.Info("authorized request", "method", r.Method, "url", r.URL.Redacted(), "user", user)
 		handler.ServeHTTP(w, r)
 	})
 }

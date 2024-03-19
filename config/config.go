@@ -30,8 +30,9 @@ type Config struct {
 	PostgresDatabase string `env:"POSTGRES_DB" default:"postgres"`
 	PostgresSchema   string `env:"POSTGRES_SCHEMA" default:"public"`
 
-	Password               string `env:"PASSWORD" default:"" redact:"true"`
-	ExampleReverseProxyURL string `env:"EXAMPLE_REVERSE_PROXY_URL" default:"http://example.com"`
+	ExampleBasicAuthUser     string `env:"USER" default:"gonfoot" redact:"true"`
+	ExampleBasicAuthPassword string `env:"PASSWORD" default:"footgon" redact:"true"`
+	ExampleReverseProxyURL   string `env:"EXAMPLE_REVERSE_PROXY_URL" default:"http://example.com"`
 }
 
 func (c *Config) LogValue() slog.Value {

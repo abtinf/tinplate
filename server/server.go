@@ -100,7 +100,7 @@ func New(ctx context.Context, log *slog.Logger, config *config.Config) (*server,
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("/", http.NotFoundHandler())
+	mux.Handle("/", requireBasicAuth(s, http.NotFoundHandler()))
 	mux.Handle("/favicon.ico", http.FileServer(http.FS(static.Http)))
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(static.Http))))
 	mux.Handle("/metrics", promhttp.Handler())

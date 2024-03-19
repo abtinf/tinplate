@@ -105,6 +105,8 @@ func New(ctx context.Context, log *slog.Logger, config *config.Config) (*server,
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(static.Http))))
 	mux.Handle("/metrics", promhttp.Handler())
 	mux.Handle("/api/", http.StripPrefix("/api", logger(s, onlyWhenReady(s, grpcMux))))
+
+	mux.Handle("/examplereverseproxy/", logger(s, mustReverseProxy(s, s.config.ExampleReverseProxyURL)))
 	s.mux = mux
 
 	s.httpServer = &http.Server{

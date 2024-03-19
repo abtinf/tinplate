@@ -2,6 +2,8 @@ package server
 
 import (
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 )
 
 func upgradeHandler(base http.Handler, upgrade http.Handler) http.Handler {
@@ -19,6 +21,26 @@ func logger(s *server, handler http.Handler) http.Handler {
 		s.log.Info("request", "method", r.Method, "url", r.URL.Redacted())
 		handler.ServeHTTP(w, r)
 	})
+}
+
+func reverseProxy(proxy *httputil.ReverseProxy) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		proxy.ServeHTTP(w, r)
+	})
+}
+
+func mustReverseProxy(s *server, rawURL string) http.Handler {
+	url, err := url.Parse(rawURL)
+	if err != nil {
+		s.log.Error("failed to parse reverse proxy url", "rawURL", rawURL, "error", err)
+		panic(rawURL)
+	}
+	proxy := &httputil.ReverseProxy{
+		Rewrite: func(r *httputil.ProxyRequest) {
+			r.SetURL(url)
+		},
+	}
+	return reverseProxy(proxy)
 }
 
 func onlyWhenReady(s *server, handler http.Handler) http.Handler {

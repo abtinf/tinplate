@@ -24,6 +24,7 @@ Will be ready soon.
   - Logging
   - Protocol upgrade (HTTP and GRPC served on same port)
   - Only serve requests when server ready
+  - Reverse proxy: `http://localhost:8080/examplereverseproxy/`
 - Resiliency
   - Service dependency monitoring
     - DB
@@ -116,7 +117,6 @@ Will be ready soon.
 - Endpoint Example
   - basic auth
   - JWT
-  - Reverse proxy
   - GRPC/HTTP mapped code returns
   - Custom HTTP status code return
   - File upload

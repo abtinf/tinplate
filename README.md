@@ -23,6 +23,7 @@ Will be ready soon.
 - Middleware
   - Logging
   - Protocol upgrade (HTTP and GRPC served on same port)
+  - Only serve requests when server ready
 - Resiliency
   - Service dependency monitoring
     - DB

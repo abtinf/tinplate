@@ -47,6 +47,8 @@ Protogen() {
 		--grpc-gateway_out=./proto \
 		--grpc-gateway_opt=paths=source_relative \
 		--openapiv2_out=./proto \
+		--grpc-gateway-ts_out=./proto \
+		--grpc-gateway-ts_opt=paths=source_relative \
 		./proto/api.proto
 	mv ./proto/api.swagger.json ./static/http/swagger-ui/swagger.json
 }

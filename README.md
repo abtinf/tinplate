@@ -20,6 +20,7 @@ Will be ready soon.
   - HTTP endpoints generated using protobufs
     - Unencrypted HTTP/2
   - Database code generated using sqlc
+  - TypeScript client
 - Middleware
   - Logging
   - Protocol upgrade (HTTP and GRPC served on same port)
@@ -47,6 +48,7 @@ Will be ready soon.
   - CORS
 - Developer QoL
   - Move main to cmd
+- TypeScript usage example
 
 ### Later
 
@@ -138,6 +140,7 @@ Will be ready soon.
   - Add the go plugins in to your path so `protoc` can find them: `export PATH="$PATH:$(go env GOPATH)/bin"`
   - `go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest`
   - `go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest`
+  - `go install github.com/grpc-ecosystem/protoc-gen-grpc-gateway-ts@latest`
 - Modifying endpoints
   - Edit `proto/api.proto`
   - Run `./manage.sh -p`

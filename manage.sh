@@ -64,7 +64,7 @@ Sqlgen() {
 }
 
 
-while getopts ":ioudhgsp" option; do
+while getopts ":ioudhasp" option; do
 	case $option in
 		i)
 			Init
@@ -81,7 +81,7 @@ while getopts ":ioudhgsp" option; do
 		h)
 			Help
 			exit;;
-		g)
+		a)
 			Genall
 			exit;;
 		p)

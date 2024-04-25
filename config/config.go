@@ -109,26 +109,32 @@ func New(lookupenv func(string) (string, bool), args []string) (*Config, error) 
 			if f, ok := formalFlagSet[env]; ok {
 				val = f.Value.String()
 			}
-			switch field.Kind() {
-			case reflect.String:
-				field.SetString(val)
-			case reflect.Int:
-				v, err := strconv.Atoi(val)
-				if err != nil {
-					return nil, err
-				}
-				field.SetInt(int64(v))
-			case reflect.Bool:
-				v, err := strconv.ParseBool(val)
-				if err != nil {
-					return nil, err
-				}
-				field.SetBool(v)
-			default:
-				return nil, fmt.Errorf("unsupported type %s", field.Kind())
+			if err := setFieldValue(field, val); err != nil {
+				return nil, err
 			}
 		}
 	}
-
 	return &c, nil
+}
+
+func setFieldValue(field reflect.Value, val string) error {
+	switch field.Kind() {
+	case reflect.String:
+		field.SetString(val)
+	case reflect.Int:
+		v, err := strconv.Atoi(val)
+		if err != nil {
+			return err
+		}
+		field.SetInt(int64(v))
+	case reflect.Bool:
+		v, err := strconv.ParseBool(val)
+		if err != nil {
+			return err
+		}
+		field.SetBool(v)
+	default:
+		return fmt.Errorf("unsupported type %s", field.Kind())
+	}
+	return nil
 }

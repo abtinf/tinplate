@@ -134,6 +134,11 @@
         },
         "tags": [
           "API"
+        ],
+        "security": [
+          {
+            "BasicAuth": []
+          }
         ]
       }
     },
@@ -306,6 +311,22 @@
             "$ref": "#/definitions/protobufAny"
           }
         }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "BasicAuth": {
+      "type": "basic"
+    },
+    "OAuth2": {
+      "type": "oauth2",
+      "flow": "implicit",
+      "authorizationUrl": "https://example.com/oauth/authorize",
+      "tokenUrl": "https://example.com/oauth/token",
+      "scopes": {
+        "admin": "Grants read and write access to administrative information",
+        "read": "Grants read access",
+        "write": "Grants write access"
       }
     }
   }

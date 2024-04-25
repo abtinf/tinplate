@@ -17,8 +17,39 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
         license: {
             name: "Copyright 2023 Abtin Forouzandeh Tabrizi. All Rights Reserved.";
         }
-    }
+    };
     base_path: "/api"
+    security_definitions: {
+        security: {
+            key: "BasicAuth";
+            value: {
+                type: TYPE_BASIC;
+            }
+        }
+        security: {
+            key: "OAuth2";
+            value: {
+                type: TYPE_OAUTH2;
+                flow: FLOW_IMPLICIT;
+                authorization_url: "https://example.com/oauth/authorize";
+                token_url: "https://example.com/oauth/token";
+                scopes: {
+                    scope: {
+                        key: "read";
+                        value: "Grants read access";
+                    }
+                    scope: {
+                        key: "write";
+                        value: "Grants write access";
+                    }
+                    scope: {
+                        key: "admin";
+                        value: "Grants read and write access to administrative information";
+                    }
+                }
+            }
+        }
+    }
 };
 
 service API {
@@ -58,6 +89,14 @@ service API {
     rpc GetMigrations (google.protobuf.Empty) returns (MigrationList) {
         option (google.api.http) = {
             get: "/migrations"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            security: {
+                security_requirement: {
+                    key: "BasicAuth";
+                    value: {}
+                }
+            }
         };
     }
 }

@@ -83,13 +83,17 @@ func buildFlagSet(name string, c *Config) *flag.FlagSet {
 
 func New(lookupenv func(string) (string, bool), args []string) (*Config, error) {
 	c := Config{}
-	flagset := buildFlagSet(args[0], &c)
 
+	flagset := buildFlagSet(args[0], &c)
 	if len(args) > 1 {
 		if err := flagset.Parse(args[1:]); err != nil {
 			return nil, err
 		}
 	}
+	formalFlagSet := make(map[string]*flag.Flag)
+	flagset.Visit(func(f *flag.Flag) {
+		formalFlagSet[f.Name] = f
+	})
 
 	v := reflect.ValueOf(&c).Elem()
 	for i := 0; i < v.NumField(); i++ {
@@ -102,7 +106,7 @@ func New(lookupenv func(string) (string, bool), args []string) (*Config, error) 
 					val = v
 				}
 			}
-			if f := flagset.Lookup(env); f != nil {
+			if f, ok := formalFlagSet[env]; ok {
 				val = f.Value.String()
 			}
 			switch field.Kind() {
